@@ -1,11 +1,20 @@
 import { loadTasks as loadTasksFromStorage, saveTasks } from './storage.js';
 
-export function createTaskElement(id, content, category) {
+export function createTaskElement(id, content, category, index) {
     const newTask = document.createElement('div');
     newTask.id = id;
     newTask.draggable = true;
     newTask.classList.add('task');
-    newTask.setAttribute('data-category', category); 
+    newTask.setAttribute('data-category', category);
+
+    const taskIndex = document.createElement('span');
+    taskIndex.classList.add('task-index');
+    taskIndex.textContent = `${index}. `;
+    newTask.appendChild(taskIndex);
+
+    const taskContent = document.createElement('span');
+    taskContent.textContent = content;
+    newTask.appendChild(taskContent);
 
     const deleteIcon = document.createElement('i');
     const moveUpIcon = document.createElement('i');
@@ -36,8 +45,17 @@ export function createTaskElement(id, content, category) {
         }
     });
 
-    const taskContent = document.createElement('span');
-    taskContent.textContent = content;
+    deleteIcon.classList.add('task-action-icon');
+    moveUpIcon.classList.add('task-action-icon', 'fa-arrow-up');
+    moveDownIcon.classList.add('task-action-icon', 'fa-arrow-down');
+
+    const iconsContainer = document.createElement('div');
+    iconsContainer.classList.add('task-icons');
+    iconsContainer.appendChild(deleteIcon);
+    iconsContainer.appendChild(moveUpIcon);
+    iconsContainer.appendChild(moveDownIcon);
+
+    newTask.appendChild(iconsContainer);
 
     function handleDragStart(e) {
         e.dataTransfer.setData('text/plain', e.target.id);
@@ -46,22 +64,19 @@ export function createTaskElement(id, content, category) {
 
     newTask.addEventListener('dragstart', handleDragStart);
 
-    newTask.appendChild(taskContent);
-    newTask.appendChild(deleteIcon);
-    newTask.appendChild(moveUpIcon);
-    newTask.appendChild(moveDownIcon);
-
     return newTask;
 }
 
+
 export function addTask(content, containerSelector, category) {
     if (content.trim() !== '') {
+        const tasks = loadTasksFromStorage(category);
         const id = 'task-' + Date.now();
-        const newTaskElement = createTaskElement(id, content.trim(), category);
+        const index = tasks.length + 1; 
+        const newTaskElement = createTaskElement(id, content.trim(), category, index);
         document.querySelector(containerSelector).appendChild(newTaskElement);
         
-        const tasks = loadTasksFromStorage(category);
-        tasks.push({ id: id, content: content.trim(), category: category });
+        tasks.push({ id, content: content.trim(), category, index }); 
         saveTasks(tasks, category);
     }
 }
@@ -71,8 +86,8 @@ export function renderTasks() {
     categories.forEach(category => {
         const containerSelector = `.droppable[data-category="${category}"]`;
         const tasks = loadTasksFromStorage(category);
-        tasks.forEach(task => {
-            const newTaskElement = createTaskElement(task.id, task.content, category);
+        tasks.forEach((task, index) => {
+            const newTaskElement = createTaskElement(task.id, task.content, task.category, index + 1);
             document.querySelector(containerSelector).appendChild(newTaskElement);
         });
     });

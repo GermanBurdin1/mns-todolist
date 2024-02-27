@@ -1,3 +1,5 @@
+//code optionel 
+
 document.addEventListener('DOMContentLoaded', () => {
     const inputField = document.querySelector('.input-section .task-input');
     const addTaskButton = document.getElementById('addTaskButton');
