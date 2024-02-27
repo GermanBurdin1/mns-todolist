@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-do list</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="input-section">
+        <input type="text" placeholder="Ajouter une tâche" class="task-input" />
+        <button id="addTaskButton">Ajouter une tâche</button> 
+    </div>
+      <div class="todo-section">
+        <div
+          class="todo todo3"
+        >
+          <h2>Tâche à faire</h2>
+          <div
+            class="droppable" data-category="tache-a-faire"
+          ></div>
+        </div>
+        <div
+          class="todo todo2"
+        >
+          <h2>Tâche en cours</h2>
+          <div
+            class="droppable" data-category="tache-en-cours"
+          ></div>
+        </div>
+        <div
+          class="todo todo1"
+        >
+          <h2>Tâche accomplie</h2>
+          <div
+            class="droppable" data-category="tache-accomplie"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <script src="./js/app.js" type="module"></script>
+  </body>
+</html>
