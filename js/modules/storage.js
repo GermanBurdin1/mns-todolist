@@ -7,7 +7,7 @@ export function saveTasks(tasks, category) {
 }
 
 export function loadTasks(category) {
-    let tasksJson = localStorage.getItem(category);
+    let tasksJson = localStorage.getItem('tasks_' + category); 
     if (!tasksJson || tasksJson === "undefined") {
         return [];
     }

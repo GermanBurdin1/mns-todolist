@@ -13,6 +13,10 @@ export function createTaskElement(id, content, category) {
 
     deleteIcon.classList.add('fas', 'fa-trash');
     deleteIcon.addEventListener('click', () => {
+        const taskCategory = newTask.getAttribute('data-category');
+        let tasks = loadTasksFromStorage(taskCategory);
+        tasks = tasks.filter(task => task.id !== id);
+        saveTasks(tasks, taskCategory);
         newTask.remove();
     });
 
@@ -53,7 +57,7 @@ export function createTaskElement(id, content, category) {
 export function addTask(content, containerSelector, category) {
     if (content.trim() !== '') {
         const id = 'task-' + Date.now();
-        const newTaskElement = createTaskElement(id, content.trim());
+        const newTaskElement = createTaskElement(id, content.trim(), category);
         document.querySelector(containerSelector).appendChild(newTaskElement);
         
         const tasks = loadTasksFromStorage(category);
