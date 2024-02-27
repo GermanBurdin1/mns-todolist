@@ -21,11 +21,6 @@ export function setupDragAndDrop() {
             const oldCategory = draggableElement.getAttribute('data-category');
             const newCategory = dropzone.getAttribute('data-category');
             
-            const oldIndexElement = draggableElement.querySelector('.task-index');
-            const oldIndex = oldIndexElement ? oldIndexElement.textContent.replace('. ', '') : null;
-            
-            if (!oldIndex) return;
-
             dropzone.appendChild(draggableElement);
             draggableElement.setAttribute('data-category', newCategory);
             
@@ -34,24 +29,23 @@ export function setupDragAndDrop() {
             saveTasks(oldTasks, oldCategory);
             
             const newTasks = loadTasks(newCategory);
-            const taskContentElement = draggableElement.querySelector('span:nth-child(2)');
+            const taskContentElement = draggableElement.querySelector('.task-content');
             const taskContent = taskContentElement ? taskContentElement.textContent.trim() : '';
+            // Получаем индекс из текста элемента, но не изменяем его
+            const oldIndex = draggableElement.querySelector('.task-index').textContent.split('.')[0];
             const taskData = { 
                 id, 
                 content: taskContent,
                 category: newCategory,
-                index: parseInt(oldIndex, 10) 
+                index: parseInt(oldIndex) // Используем сохраненный индекс
             };
 
-            if (!isNaN(taskData.index)) {
-                newTasks.push(taskData);
-                saveTasks(newTasks, newCategory);
-
-                updateTaskIndexes(oldCategory);
-                updateTaskIndexes(newCategory);
-            }
+            newTasks.push(taskData);
+            // Сортировать задачи в newTasks по индексу, если это необходимо
+            saveTasks(newTasks, newCategory);
         }
     }
+
 
     const tasks = document.querySelectorAll('.task');
     tasks.forEach(task => {
