@@ -21,11 +21,9 @@ export function setupDragAndDrop() {
             const oldCategory = draggableElement.getAttribute('data-category');
             const newCategory = dropzone.getAttribute('data-category');
             
-            // Сохраняем старый индекс задачи
             const oldIndexElement = draggableElement.querySelector('.task-index');
             const oldIndex = oldIndexElement ? oldIndexElement.textContent.replace('. ', '') : null;
             
-            // Если не существует индекса, прерываем функцию
             if (!oldIndex) return;
 
             dropzone.appendChild(draggableElement);
@@ -42,10 +40,9 @@ export function setupDragAndDrop() {
                 id, 
                 content: taskContent,
                 category: newCategory,
-                index: parseInt(oldIndex, 10) // Используем старый индекс
+                index: parseInt(oldIndex, 10) 
             };
 
-            // Убедимся, что index является числом
             if (!isNaN(taskData.index)) {
                 newTasks.push(taskData);
                 saveTasks(newTasks, newCategory);
@@ -56,13 +53,11 @@ export function setupDragAndDrop() {
         }
     }
 
-    // Назначаем обработчики событий для задач
     const tasks = document.querySelectorAll('.task');
     tasks.forEach(task => {
         task.addEventListener('dragstart', handleDragStart);
     });
 
-    // Назначаем обработчики событий для dropzones
     const todoLists = document.querySelectorAll('.droppable');
     todoLists.forEach((list) => {
         list.addEventListener('dragover', handleDragOver);
