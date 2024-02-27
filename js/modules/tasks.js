@@ -21,7 +21,7 @@ export function createTaskElement(id, content, category, index) {
     newTask.appendChild(taskIndex);
 
     const taskContent = document.createElement('span');
-    taskContent.classList.add('task-content'); // Этот класс отсутствовал
+    taskContent.classList.add('task-content'); 
     taskContent.textContent = content;
     newTask.appendChild(taskContent);
 
