@@ -1,5 +1,13 @@
 import { loadTasks as loadTasksFromStorage, saveTasks } from './storage.js';
 
+export function updateTaskIndexes(category) {
+    const tasks = loadTasksFromStorage(category);
+    tasks.forEach((task, index) => {
+      task.index = index + 1; 
+    });
+    saveTasks(tasks, category); 
+  }
+
 export function createTaskElement(id, content, category, index) {
     const newTask = document.createElement('div');
     newTask.id = id;
@@ -13,6 +21,7 @@ export function createTaskElement(id, content, category, index) {
     newTask.appendChild(taskIndex);
 
     const taskContent = document.createElement('span');
+    taskContent.classList.add('task-content'); // Этот класс отсутствовал
     taskContent.textContent = content;
     newTask.appendChild(taskContent);
 
@@ -27,6 +36,7 @@ export function createTaskElement(id, content, category, index) {
         tasks = tasks.filter(task => task.id !== id);
         saveTasks(tasks, taskCategory);
         newTask.remove();
+        updateTaskIndexes(taskCategory);
     });
 
     moveUpIcon.classList.add('fas', 'fa-arrow-up');
@@ -72,7 +82,10 @@ export function addTask(content, containerSelector, category) {
     if (content.trim() !== '') {
         const tasks = loadTasksFromStorage(category);
         const id = 'task-' + Date.now();
-        const index = tasks.length + 1; 
+        
+        const maxIndex = tasks.reduce((max, task) => Math.max(max, task.index || 0), 0);
+        const index = maxIndex + 1;
+        
         const newTaskElement = createTaskElement(id, content.trim(), category, index);
         document.querySelector(containerSelector).appendChild(newTaskElement);
         
@@ -86,9 +99,11 @@ export function renderTasks() {
     categories.forEach(category => {
         const containerSelector = `.droppable[data-category="${category}"]`;
         const tasks = loadTasksFromStorage(category);
-        tasks.forEach((task, index) => {
-            const newTaskElement = createTaskElement(task.id, task.content, task.category, index + 1);
-            document.querySelector(containerSelector).appendChild(newTaskElement);
+        const container = document.querySelector(containerSelector);
+        container.innerHTML = ''; 
+        tasks.forEach(task => {
+            const newTaskElement = createTaskElement(task.id, task.content, task.category, task.index); 
+            container.appendChild(newTaskElement);
         });
     });
 }
